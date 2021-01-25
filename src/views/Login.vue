@@ -32,7 +32,7 @@
           @click-right-icon="showPassword = !showPassword"
         />
       </van-cell-group>
-      <div class="forget"><span>忘记密码？</span></div>
+      <div class="forget"><span @click="tofind">忘记密码？</span></div>
       <van-button round class="login-btn" block type="default" @click="gologin"
         >登&nbsp;&nbsp;&nbsp;录</van-button
       >
@@ -142,7 +142,13 @@ export default {
         .then((res) => {
           //登录成功
           Toast(res.data.msg);
-          this.$router.push({ path: "/" });
+          if (res.data.code == 200) {
+            let tokenString = res.data.token;
+            //配置cookies生命周期，单位不区分大小写
+            this.$cookies.config("1d");
+            this.$cookies.set("tokenString", tokenString);
+            this.$router.push({ path: "/" });
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -186,7 +192,7 @@ export default {
         //a=1&b=2&c=3
         data: {
           appkey: "U2FsdGVkX19WSQ59Cg+Fj9jNZPxRC5y0xB1iV06BeNA=",
-          nickName: this.registernickname,
+          nickName: this.register.nickname,
           password: this.register.password,
           phone: this.register.phone,
         },
@@ -202,6 +208,11 @@ export default {
         .catch((err) => {
           console.log("err ==> ", err);
         });
+    },
+
+    // 找回密码
+    tofind() {
+      this.$router.push("/findpassword");
     },
   },
 };

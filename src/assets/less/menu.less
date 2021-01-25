@@ -1,0 +1,63 @@
+.menu {
+  min-height:calc(100vh - 50px) ;
+  background-color: rgb(247, 247, 247);
+  padding-bottom: 10px;
+  .van-search {
+    /deep/.van-icon {
+      color: rgb(4, 161, 106);
+    }
+  }
+  .van-tabbar--fixed {
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    position: relative;
+    background-color: rgb(250, 250, 250);
+    /deep/.van-tabbar-item__icon {
+      width: 20px;
+      height: 20px;
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+    .van-tabbar-item--active {
+      background-color: transparent;
+      color: rgb(4, 161, 106);
+      font-weight: bold;
+      /deep/.van-tabbar-item__icon {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+  .tips{
+    color: #000;
+    padding: 15px;
+  }
+  .van-card {
+    background-color: #fff;
+    margin: 0px 15px 10px;
+    border-radius: 15px;
+    .van-tag {
+      background-color: rgb(4, 161, 106);
+    }
+    .van-card__title {
+      font-size: 14px;
+      font-weight: bold;
+    }
+    /deep/.van-ellipsis {
+      white-space: pre-wrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /*想省略几行就写几*/
+      -webkit-box-orient: vertical;
+      max-height: 40px;
+    }
+    .van-card__price {
+      color: rgb(4, 161, 106);
+      font-weight: bold;
+    }
+  }
+}

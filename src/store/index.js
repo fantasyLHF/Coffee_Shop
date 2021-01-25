@@ -6,9 +6,13 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     appkey: "appkey=U2FsdGVkX19WSQ59Cg+Fj9jNZPxRC5y0xB1iV06BeNA=",
-    nickname: "请登录！"
+    nickname: "请登录！",
+    cartData: [],
   },
   mutations: {
+    putint(state, obj) {
+      state.push(obj)
+    }
   },
   actions: {
   },

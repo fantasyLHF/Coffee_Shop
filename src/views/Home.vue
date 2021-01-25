@@ -4,17 +4,22 @@
     <van-nav-bar>
       <template #left class="ltop">
         <span class="l"> {{ time }}好</span
-        ><span class="r">{{ username }}</span>
+        ><span class="r" v-if="nickName.length > 0">{{ nickName }}</span>
+        <span class="r" v-else @click="gotoLogin">请登录</span>
       </template>
       <template #right>
-        <van-search v-model="value" placeholder="输入商品名称" shape="round" />
+        <img :src="userImg" alt="" class="img" @click="gotomine" />
       </template>
     </van-nav-bar>
     <section>
       <!-- 轮播图 -->
-      <van-swipe :autoplay="30000">
-        <van-swipe-item v-for="(image, index) in images" :key="index">
-          <img v-lazy="image" class="trunImg" />
+      <van-swipe :autoplay="2500">
+        <van-swipe-item
+          v-for="(v, index) in data"
+          :key="index"
+          @click="godetail(v.pid)"
+        >
+          <img v-lazy="v.bannerImg" class="trunImg" />
         </van-swipe-item>
       </van-swipe>
       <!-- 热卖推荐 -->
@@ -23,7 +28,12 @@
       </div>
       <!-- 热卖列表 -->
       <div class="hotlist">
-        <div class="list" v-for="(v, i) in hotdata" :key="i">
+        <div
+          class="list"
+          v-for="(v, i) in hotdata"
+          :key="i"
+          @click="godetail(v.pid)"
+        >
           <div class="imgbox">
             <div class="tips">hot</div>
             <img :src="v.largeImg" alt="" />
@@ -34,8 +44,6 @@
         </div>
       </div>
     </section>
-    <!-- 底部占位 -->
-    <div class="footer"></div>
   </div>
 </template>
 <script>
@@ -44,10 +52,25 @@ export default {
     return {
       value: "",
       time: "下午",
-      username: "Hokv",
-      images: [],
+      data: [],
       hotdata: [],
+      nickName: "",
+      userImg: "../assets/img/favicon.png",
     };
+  },
+  methods: {
+    //跳转详情页
+    godetail(id) {
+      this.$router.push("/detail/" + id);
+    },
+    // 跳到登录页面
+    gotoLogin() {
+      this.$router.push("/login");
+    },
+    // 跳到我的页面
+    gotomine() {
+      this.$router.push("/mine");
+    },
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
@@ -68,18 +91,34 @@ export default {
       } else {
         vm.time = "晚上";
       }
-
-      vm.axios("/banner?" + vm.$store.state.appkey).then((data) => {
-        data.data.result.forEach((v) => {
-          vm.images.push(v.bannerImg);
+      // 轮播图数据
+      vm.axios("/banner?" + vm.$store.state.appkey).then((res) => {
+        vm.data = res.data.result;
+      });
+      // 热榜数据
+      vm.axios("/typeProducts?key=isHot&value=1&" + vm.$store.state.appkey)
+        .then((data) => {
+          vm.hotdata = data.data.result;
+        })
+        .catch((e) => {
+          console.log(e);
         });
-      });
-      vm.axios(
-        "/typeProducts?key=isHot&value=1&" + vm.$store.state.appkey
-      ).then((data) => {
-        vm.hotdata = data.data.result;
-        console.log(vm.hotdata);
-      });
+      // 登录昵称
+      vm.axios({
+        url: "/findAccountInfo",
+        method: "GET",
+        params: {
+          appkey: "U2FsdGVkX19WSQ59Cg+Fj9jNZPxRC5y0xB1iV06BeNA=",
+          tokenString: vm.$cookies.get("tokenString"),
+        },
+      })
+        .then((res) => {
+          vm.userImg = res.data.result[0].userImg;
+          vm.nickName = res.data.result[0].nickName;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     });
   },
 };
@@ -88,6 +127,11 @@ export default {
 .home {
   .van-nav-bar {
     overflow: hidden;
+    .img {
+      height: 70%;
+      width: auto;
+      border-radius: 50%;
+    }
     .van-nav-bar__left {
       .l {
         font-weight: bold;
@@ -99,7 +143,7 @@ export default {
         font-weight: bold;
       }
     }
-    /deep/.van-icon-search {
+    /deep/.van-icon {
       color: rgb(4, 161, 106);
     }
   }
@@ -110,10 +154,6 @@ export default {
     .van-swipe {
       border-radius: 20px;
       overflow: hidden;
-      .van-swipe__track {
-        padding: 0;
-        margin: 0;
-      }
     }
     .hotIntro {
       height: 40px;
@@ -181,9 +221,6 @@ export default {
         }
       }
     }
-  }
-  .footer {
-    height: 50px;
   }
 }
 </style>
