@@ -253,7 +253,9 @@ export default {
         },
       })
         .then((res) => {
-          vm.myMessage = res.data.result[0];
+          if (res.data.result) {
+            vm.myMessage = res.data.result[0];
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -315,6 +317,7 @@ export default {
       .content {
         .textarea {
           height: 30px;
+          resize: none;
         }
         margin-left: 10px;
         flex: auto;

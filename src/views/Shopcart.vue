@@ -288,7 +288,7 @@ export default {
   }
   section {
     position: relative;
-    height: calc(auto - 70px);
+    height: calc(100% - 70px);
     .box {
       position: relative;
       top: -80px;

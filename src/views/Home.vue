@@ -55,7 +55,7 @@ export default {
       data: [],
       hotdata: [],
       nickName: "",
-      userImg: "../assets/img/favicon.png",
+      userImg: require("../assets/img/favicon.png"),
     };
   },
   methods: {
@@ -113,8 +113,10 @@ export default {
         },
       })
         .then((res) => {
-          vm.userImg = res.data.result[0].userImg;
-          vm.nickName = res.data.result[0].nickName;
+          if (res.data.result) {
+            vm.userImg = res.data.result[0].userImg;
+            vm.nickName = res.data.result[0].nickName;
+          }
         })
         .catch((e) => {
           console.log(e);
